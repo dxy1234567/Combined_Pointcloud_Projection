@@ -1,7 +1,7 @@
 import open3d as o3d
 import os
 import numpy as np
-from util.functions import extract_timestamp, read_odom, odom_to_T_r
+from util.functions import read_odom, odom_to_T_r, read_pcd_lists, read_image_lists
 
 
 directory_pcd = "/home/cjs/rosbag/20240926/2/_hesai_pandar"
@@ -12,17 +12,9 @@ path_output = "/home/cjs/rosbag/20240926/combined_pcd"
 
 odom_lists = read_odom(path_odom)
 
-pcd_lists = []
-for file_name in sorted(os.listdir(directory_pcd), key=lambda f: extract_timestamp(f)):
-    if file_name.endswith(".pcd"):
-        file_path = os.path.join(directory_pcd, file_name)
-        pcd_lists.append(file_path)
+pcd_lists = read_pcd_lists(directory_pcd)
 
-image_lists = []
-for file_name in sorted(os.listdir(directory_image), key=lambda f: extract_timestamp(f)):
-    if file_name.endswith(".png"):
-        file_path = os.path.join(directory_image, file_name)
-        image_lists.append(file_path)
+image_lists = read_image_lists(directory_image)
 
 N = min(len(pcd_lists), len(image_lists))
 
