@@ -1,14 +1,17 @@
 import open3d as o3d
 import os
 import numpy as np
-from util.functions import read_odom, odom_to_T_r, read_pcd_lists, read_image_lists
+import sys
+sys.path.append(".")
+
+from utils.functions import read_odom, odom_to_T_r, read_pcd_lists, read_image_lists
 
 
-directory_pcd = "/home/cjs/rosbag/20240926/2/_hesai_pandar"
-directory_image = "/home/cjs/rosbag/20240926/2/_camera_infra1_image_rect_raw"
-path_odom = "/home/cjs/rosbag/20240926/odom.txt"
+directory_pcd = "/home/cjs/rosbag/2024-09-27/gml_2024-09-27-17-10-28/_hesai_pandar"
+directory_image = "/home/cjs/rosbag/2024-09-27/gml_2024-09-27-17-10-28/_camera_infra1_image_rect_raw"
+path_odom = "/home/cjs/rosbag/2024-09-27/gml_2024-09-27-17-10-28/odom_noggo_gml_2024-09-27-17-10-28.txt"
 
-path_output = "/home/cjs/rosbag/20240926/combined_pcd"
+path_output = "/home/cjs/rosbag/2024-09-27/gml_2024-09-27-17-10-28/output"
 
 odom_lists = read_odom(path_odom)
 
@@ -18,11 +21,11 @@ image_lists = read_image_lists(directory_image)
 
 N = min(len(pcd_lists), len(image_lists))
 
-for i in range(10, N):
+for i in range(500, N):
     combined_pcd = o3d.geometry.PointCloud()
     filename = os.path.basename(pcd_lists[i])
 
-    for j in range(i - 5, i + 600):
+    for j in range(i - 5, i + 1000):
         
         pcd = o3d.io.read_point_cloud(pcd_lists[j])
 
