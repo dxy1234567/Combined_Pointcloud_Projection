@@ -1,0 +1,12 @@
+# 运行
+cd ~/workspace/
+source devel/setup.bash
+rosrun <project_name> <cpp_name> <args>
+
+# 例1：运行 bag_extractor
+cd ~/test_ws/
+source devel/setup.bash
+rosrun my_project bag_extractor <path_to_bag>
+
+
+
