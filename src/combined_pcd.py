@@ -4,7 +4,7 @@ import numpy as np
 import sys
 sys.path.append(".")
 
-from utils.functions import read_odom, odom_to_T_r, read_pcd_lists, read_image_lists
+from utils.functions import read_odom, odom_to_T_r, read_pcd_list, read_image_list
 
 
 directory_pcd = "/home/cjs/rosbag/2024-09-27/gml_2024-09-27-17-10-28/_hesai_pandar"
@@ -15,17 +15,18 @@ path_output = "/home/cjs/rosbag/2024-09-27/gml_2024-09-27-17-10-28/output"
 
 odom_lists = read_odom(path_odom)
 
-pcd_lists = read_pcd_lists(directory_pcd)
+pcd_lists = read_pcd_list(directory_pcd)
 
-image_lists = read_image_lists(directory_image)
+image_lists = read_image_list(directory_image)
 
+start_index = 100
 N = min(len(pcd_lists), len(image_lists))
 
-for i in range(500, N):
+for i in range(start_index, N - 6):
     combined_pcd = o3d.geometry.PointCloud()
     filename = os.path.basename(pcd_lists[i])
 
-    for j in range(i - 5, i + 1000):
+    for j in range(i - 5, i + 6):
         
         pcd = o3d.io.read_point_cloud(pcd_lists[j])
 

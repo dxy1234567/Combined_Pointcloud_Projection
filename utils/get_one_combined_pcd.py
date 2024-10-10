@@ -5,7 +5,7 @@
 import open3d as o3d
 import os
 import numpy as np
-from util.functions import read_odom, odom_to_T_r, read_pcd_lists, read_image_lists
+from utils.functions import read_odom, odom_to_T_r, read_pcd_list, read_image_list
 
 
 directory_pcd = "/home/cjs/rosbag/20240926/2/_hesai_pandar"
@@ -16,9 +16,9 @@ path_output = "/home/cjs/rosbag/20240926/combined_pcd"
 
 odom_lists = read_odom(path_odom)
 
-pcd_lists = read_pcd_lists(directory_pcd)
+pcd_lists = read_pcd_list(directory_pcd)
 
-image_lists = read_image_lists(directory_image)
+image_lists = read_image_list(directory_image)
 
 N = min(len(pcd_lists), len(image_lists))
 

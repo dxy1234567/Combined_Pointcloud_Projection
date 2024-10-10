@@ -1,29 +1,28 @@
 import cv2
 import numpy as np
-import open3d as o3d
 
 # 定义函数根据深度获取颜色
 def get_color(cur_depth, max_depth, min_depth):
     scale = (max_depth - min_depth) / 10
     if cur_depth < min_depth:
-        return (0, 0, 255)  # 返回蓝色
+        return (255, 0, 0)  # 返回红色
     elif cur_depth < min_depth + scale:
-        green = int((cur_depth - min_depth) / scale * 255)
-        return (0, green, 255)  # 返回蓝到黄的渐变色
+        green = int((cur_depth - min_depth) / scale * 165)
+        return (255, green, 0)  # 返回红到橙的渐变色
     elif cur_depth < min_depth + scale * 2:
-        red = int((cur_depth - min_depth - scale) / scale * 255)
-        return (0, 255, 255 - red)  # 返回黄到红的渐变色
+        green = int((cur_depth - min_depth - scale) / scale * 255)
+        return (255, green, 0)  # 返回橙到黄的渐变色
     elif cur_depth < min_depth + scale * 4:
-        blue = int((cur_depth - min_depth - scale * 2) / scale * 255)
-        return (blue, 255, 0)  # 返回红到绿的渐变色
+        red = int(255 - (cur_depth - min_depth - scale * 2) / scale * 255)
+        return (red, 255, 0)  # 返回黄到绿的渐变色
     elif cur_depth < min_depth + scale * 7:
-        green = int((cur_depth - min_depth - scale * 4) / scale * 255)
-        return (255, 255 - green, 0)  # 返回绿到黄的渐变色
+        blue = int((cur_depth - min_depth - scale * 4) / scale * 255)
+        return (0, 255, blue)  # 返回绿到青的渐变色
     elif cur_depth < min_depth + scale * 10:
-        blue = int((cur_depth - min_depth - scale * 7) / scale * 255)
-        return (255, 0, blue)  # 返回黄到蓝的渐变色
+        red = int((cur_depth - min_depth - scale * 7) / scale * 255)
+        return (0, 255 - red, 255)  # 返回青到蓝的渐变色
     else:
-        return (255, 0, 255)  # 返回紫色
+        return (128, 0, 128)  # 返回紫色
 
 def pcd_projection(image_origin, cloud_origin, rvec, tvec, camera_intrinsics, dist_coeffs, path_output):
     # Extract 3D points within a certain range

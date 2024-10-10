@@ -7,7 +7,7 @@ import cv2
 def extract_timestamp(file_name):
     # 提取文件名中的时间戳部分（假设格式如 "file_<秒数>_<纳秒数>.txt"）
     # 先移除前缀 "file_" 和后缀 ".txt"
-    timestamp, _ = os.path.splitext(file_name)
+    timestamp = os.path.splitext(file_name)[0]
     sec, nsec = map(int, timestamp.split('_'))
     return sec, nsec
 
@@ -45,22 +45,37 @@ def odom_to_T_r(odom_lists, i):
 
     return T, R, t
 
-def parse_timestamp(timestamp_str):
-    seconds, nanoseconds = timestamp_str.split('_')
-    return int(seconds), int(nanoseconds)
+def pad_to_20_chars(s):
+    """
+    如果字符串长度不足20位，则在第11位处插入'0'，直到其长度为20位。
+    """
+    # 检查字符串长度
+    if len(s) < 20:
+        # 计算需要插入多少个'0'
+        num_zeros = 20 - len(s)
+        
+        # 插入'0'，在第11位处插入
+        s = s[:11] + '0' * num_zeros + s[11:]
+    
+    return s
+
+def timestamps_20(timestamps):
+    return [float(pad_to_20_chars(timestamp)) for timestamp in timestamps]
+
 
 def find_closest_timestamp(timestamps, timestamp):
     """
         从时间戳组中找到最接近时间戳的时间戳。
+        这里的比较不能是字符串比较，存在缺位问题、求差问题。
     """
     # 使用bisect模块的bisect_left函数查找插入点
-    idx = bisect.bisect_left(timestamps, timestamp, key=parse_timestamp)
+    idx = bisect.bisect_left(timestamps, timestamp)
     
     # 边界条件处理
     if idx == 0:
-        return timestamps[0]
+        return timestamps[0], -1
     elif idx == len(timestamps):
-        return timestamps[-1]
+        return timestamps[-1], -1
     
     # 找到最接近的时间戳
     before = timestamps[idx - 1]
@@ -90,7 +105,7 @@ def T_to_r_t(T):
 
     return r, t
 
-def read_pcd_lists(directory_pcd):
+def read_pcd_list(directory_pcd):
     pcd_lists = []
 
     for file_name in sorted(os.listdir(directory_pcd), key=lambda f: extract_timestamp(f)):
@@ -99,7 +114,7 @@ def read_pcd_lists(directory_pcd):
             pcd_lists.append(file_path)
     return pcd_lists
 
-def read_image_lists(directory_image):
+def read_image_list(directory_image):
     image_lists = []
 
     for file_name in sorted(os.listdir(directory_image), key=lambda f: extract_timestamp(f)):
@@ -107,3 +122,11 @@ def read_image_lists(directory_image):
             file_path = os.path.join(directory_image, file_name)
             image_lists.append(file_path)
     return image_lists
+
+def list_to_timestamps(list):
+    """
+        return: String
+    """
+    return [os.path.splitext(os.path.basename(path))[0] for path in list]
+
+    
