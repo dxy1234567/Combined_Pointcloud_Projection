@@ -41,21 +41,14 @@ camera_intrinsics= np.float64([[431.574523925781, 0, 429.674438476562],
 dist_coeffs = np.float64([0, 0, 0, 0, 0])
 
 # 外参: XT to RealSense
-T_MR = np.array([
+T_RM = np.array([
     [-0.0347702, -0.999329, -0.0115237, 0.113479],
     [0.0359214, 0.0102735, -0.999302, -0.216314],
     [0.99875, -0.0351599, 0.0355401, -0.00212184],
     [0, 0, 0, 1]
 ])
 
-T_RM = np.linalg.inv(T_MR)
-
-T_RM = np.array([
-    [-0.00608978, -0.999726, 0.0225815, 0.0297088],
-    [0.0452806, -0.022834, -0.998712, -0.105938],
-    [0.998957, -0.00505946, 0.0454075, -0.226056],
-    [0, 0, 0, 1]
-])
+T_MR = np.linalg.inv(T_RM)
 
 T_XM = np.array([
     [-0.002, 1, -0.019, 0.009],
@@ -92,9 +85,9 @@ for i in range(N):
     index_pcd = timestamps_pcd_20.index(timestamp_pcd)
 
     T_WX, _, _ = odom_to_T_r(odom_list, index_pcd)  # #####
-    T_WX_inv = np.linalg.inv(T_WX)
+    T_XW = np.linalg.inv(T_WX)
 
-    T_RW = T_4 @ T_WX_inv
+    T_RW = T_3 @ T_XW
 
     rvec, tvec = T_to_r_t(T_RW)
 
