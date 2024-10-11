@@ -16,8 +16,8 @@ sys.path.append(".")
 from utils.functions import T_to_r_t 
 from utils.pcd2depth import pcd_projection
 
-path_pcd = "/home/cjs/rosbag/data-mid360/2.pcd"
-path_image = "//home/cjs/rosbag/data-mid360/2/_camera_infra1_image_rect_raw/1727344529_801554918.png"
+path_pcd = "/home/cjs/rosbag/data-mid360/3.pcd"
+path_image = "/home/cjs/rosbag/data-mid360/3/_camera_infra1_image_rect_raw/1727344599_21069050.png"
 
 directory_output = "/home/cjs/rosbag/data-mid360/output"
 
@@ -46,6 +46,6 @@ image_origin = cv2.imread(path_image)
 cloud_origin = o3d.io.read_point_cloud(path_pcd)
 
 filename_image = os.path.basename(path_image)
-path_output = os.path.join(directory_output, filename_image)
+path_output = os.path.join(directory_output, "3_bag.png")
 
 pts2d = pcd_projection(image_origin, cloud_origin, rvec, tvec, camera_intrinsics, dist_coeffs, path_output)
