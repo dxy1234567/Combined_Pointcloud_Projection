@@ -13,22 +13,13 @@ import cv2
 import sys
 sys.path.append(".")
 
-from utils.functions import (read_image_list, read_odom, read_pcd_list, find_closest_timestamp, 
-                             odom_to_T_r, T_to_r_t, list_to_timestamps, timestamps_20)
+from utils.functions import T_to_r_t 
 from utils.pcd2depth import pcd_projection
 
-directory_pcd = "/home/cjs/rosbag/2024-09-27/gml_2024-09-27-17-10-28/_hesai_pandar"
-directory_image = "/home/cjs/rosbag/2024-09-27/gml_2024-09-27-17-10-28/_camera_infra1_image_rect_raw"
+path_pcd = "/home/cjs/rosbag/2024-09-27/gml_2024-09-27-17-10-28/_hesai_pandar"
+path_image = "/home/cjs/rosbag/2024-09-27/gml_2024-09-27-17-10-28/_camera_infra1_image_rect_raw"
 
 directory_output = "/home/cjs/rosbag/2024-09-27/gml_2024-09-27-17-10-28/projection"
-
-pcd_list = read_pcd_list(directory_pcd)
-image_list = read_image_list(directory_image)
-
-timestamps_pcd = list_to_timestamps(pcd_list)
-timestamps_pcd_20 = timestamps_20(timestamps_pcd)
-timestamps_image = list_to_timestamps(image_list)
-timestamps_image_20 = timestamps_20(timestamps_image)
 
 # 相机内参
 ## 
@@ -47,29 +38,14 @@ T_RM = np.array([
     [0, 0, 0, 1]
 ])
 
-T_RM = np.linalg.inv(T_RM)
+# T_RM = np.linalg.inv(T_RM)
 
-# 
-N = min(len(pcd_list), len(image_list))
-# i表示为XT16时间戳序号（下标）
-for i in range(N):
-    # combine_pcd = get_one_pcd(i)
+rvec, tvec = T_to_r_t(T_RM)
 
-    timestamp_pcd = timestamps_pcd_20[i]
+image_origin = cv2.imread(path_image)
+cloud_origin = o3d.io.read_point_cloud(path_pcd)
 
-    # 找到最接近当前雷达时间戳的相机时间戳
-    stamp_image, j = find_closest_timestamp(timestamps_image_20, timestamp_pcd)
+filename_image = os.path.basename(path_image)
+path_output = os.path.join(directory_output, filename_image)
 
-    index_pcd = timestamps_pcd_20.index(timestamp_pcd)
-
-    rvec, tvec = T_to_r_t(T_RM)
-
-    path_pcd = pcd_list[i]
-    path_image = image_list[j]
-
-    image_origin = cv2.imread(path_image)
-    cloud_origin = o3d.io.read_point_cloud(path_pcd)
-
-    path_output = os.path.join(directory_output, timestamps_image[j] + ".png")
-
-    pts2d = pcd_projection(image_origin, cloud_origin, rvec, tvec, camera_intrinsics, dist_coeffs, path_output)
+pts2d = pcd_projection(image_origin, cloud_origin, rvec, tvec, camera_intrinsics, dist_coeffs, path_output)
