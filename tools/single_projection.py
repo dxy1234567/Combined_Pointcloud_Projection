@@ -16,10 +16,10 @@ sys.path.append(".")
 from utils.functions import T_to_r_t 
 from utils.pcd2depth import pcd_projection
 
-path_pcd = "/home/cjs/rosbag/2024-09-27/gml_2024-09-27-17-10-28/_hesai_pandar"
-path_image = "/home/cjs/rosbag/2024-09-27/gml_2024-09-27-17-10-28/_camera_infra1_image_rect_raw"
+path_pcd = "/home/cjs/rosbag/data-mid360/2.pcd"
+path_image = "//home/cjs/rosbag/data-mid360/2/_camera_infra1_image_rect_raw/1727344529_801554918.png"
 
-directory_output = "/home/cjs/rosbag/2024-09-27/gml_2024-09-27-17-10-28/projection"
+directory_output = "/home/cjs/rosbag/data-mid360/output"
 
 # 相机内参
 ## 
@@ -30,7 +30,7 @@ camera_intrinsics= np.float64([[431.574523925781, 0, 429.674438476562],
 ## 畸变参数
 dist_coeffs = np.float64([0, 0, 0, 0, 0])
 
-# 外参: XT to RealSense
+# 外参: MID360 to RealSense
 T_RM = np.array([
     [-0.0347702, -0.999329, -0.0115237, 0.113479],
     [0.0359214, 0.0102735, -0.999302, -0.216314],
