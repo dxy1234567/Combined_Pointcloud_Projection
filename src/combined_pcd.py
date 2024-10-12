@@ -11,7 +11,7 @@ directory_pcd = "/home/cjs/rosbag/2024-09-27/gml_2024-09-27-17-10-28/_hesai_pand
 directory_image = "/home/cjs/rosbag/2024-09-27/gml_2024-09-27-17-10-28/_camera_infra1_image_rect_raw"
 path_odom = "/home/cjs/rosbag/2024-09-27/gml_2024-09-27-17-10-28/odom_noggo_gml_2024-09-27-17-10-28.txt"
 
-path_output = "/home/cjs/rosbag/2024-09-27/gml_2024-09-27-17-10-28/output"
+path_output = "/home/cjs/rosbag/2024-09-27/gml_2024-09-27-17-10-28/combined_all"
 
 odom_lists = read_odom(path_odom)
 
@@ -22,7 +22,7 @@ image_lists = read_image_list(directory_image)
 start_index = 100
 N = min(len(pcd_lists), len(image_lists))
 
-for i in range(start_index, N - 6):
+for i in range(start_index, N - 5):
     combined_pcd = o3d.geometry.PointCloud()
     filename = os.path.basename(pcd_lists[i])
 
