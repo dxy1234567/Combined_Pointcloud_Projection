@@ -60,8 +60,10 @@ def pad_to_20_chars(s):
     return s
 
 def timestamps_20(timestamps):
+    """
+        return: float
+    """
     return [float(pad_to_20_chars(timestamp)) for timestamp in timestamps]
-
 
 def find_closest_timestamp(timestamps, timestamp):
     """
@@ -129,4 +131,14 @@ def list_to_timestamps(list):
     """
     return [os.path.splitext(os.path.basename(path))[0] for path in list]
 
+def depth_within_255(max_depth, min_depth, cur_depth):
+    # 防止除以零的情况
+    if max_depth == min_depth:
+        return 0
     
+    # 按照 [0, 255] 的范围进行线性放缩
+    scaled_depth = 255 * (cur_depth - min_depth) / (max_depth - min_depth)
+    
+    # 确保返回的是 uint8 类型的值（深度值在 0 到 255 范围）
+    return int(scaled_depth)
+

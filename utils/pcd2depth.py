@@ -1,5 +1,9 @@
 import cv2
 import numpy as np
+import sys
+sys.path.append(".")
+
+from utils.functions import depth_within_255
 
 # 定义函数根据深度获取颜色
 def get_color(cur_depth, max_depth, min_depth):
@@ -82,3 +86,31 @@ def pcd_projection(image_origin, cloud_origin, rvec, tvec, camera_intrinsics, di
     
     return pts_2d
 
+def get_depth(image_origin, cloud_origin, rvec, tvec, camera_intrinsics, dist_coeffs, path_output):
+    # Extract 3D points within a certain range
+    pts_3d = []     # 三位点（以雷达坐标系为基准）
+    for point_3d in np.asarray(cloud_origin.points):        # 遍历点云中所有点
+        if point_3d[0] > 0:   
+            pts_3d.append((point_3d[0], point_3d[1], point_3d[2]))      # 将符合要求的点添加到pts_3d中
+
+    # 找出深度的最大值和最小值
+    min_depth = min(point_3d[0] for point_3d in pts_3d)
+    max_depth = max(point_3d[0] for point_3d in pts_3d)
+
+
+    # Project 3D points into image view
+    pts_2d, _ = cv2.projectPoints(np.array(pts_3d), rvec, tvec, camera_intrinsics, dist_coeffs)
+    depth_map = np.zeros_like(image_origin)
+
+    for i, point_2d in enumerate(pts_2d):
+        x, y = point_2d.ravel()
+        x, y = int(x), int(y)
+        if 0 <= x < image_origin.shape[1] and 0 <= y < image_origin.shape[0]:
+            cur_depth = pts_3d[i][0]  # 获取当前点的深度
+            depth = depth_within_255(max_depth, min_depth, cur_depth)
+            depth_map[y, x] = depth
+
+    cv2.imwrite(path_output, depth_map)
+    cv2.waitKey(0)
+    
+    return pts_2d
