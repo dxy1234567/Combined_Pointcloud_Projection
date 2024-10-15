@@ -48,3 +48,9 @@ In order to test the project and run the experiment fluently and successfully, w
 - `P1`表示右相机。  
 
 `Tr`将点从点云坐标转换到校正后的左相机坐标系。
+
+### 2.3. 点云信息
+
+### 2.4. 灰度图信息
+
+

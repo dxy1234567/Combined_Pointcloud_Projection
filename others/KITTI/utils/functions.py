@@ -4,6 +4,33 @@ import numpy as np
 import bisect
 import cv2
 
+def read_calib(path_file):
+    """
+        读取KITTI的外参信息，读取左相机。
+    """
+    with open(path_file, 'r') as file:
+        for line in file:
+            if line.startswith("P0"):
+                key, values = line.split(":")
+                values = values.split()
+                projections_list = [float(v) for v in values]   # 投影矩阵 
+            elif line.startswith("Tr"):
+                key, values = line.split(":")
+                values = values.split()
+                trans_list = [float(v) for v in values]         # 变换矩阵
+
+    K = np.array([[projections_list[0], projections_list[1], projections_list[2]],
+                  [projections_list[4], projections_list[5], projections_list[6]],
+                  [projections_list[8], projections_list[9], projections_list[10]]])
+
+    R = np.array([[trans_list[0], trans_list[1], trans_list[2]],
+                  [trans_list[4], trans_list[5], trans_list[6]],
+                  [trans_list[8], trans_list[9], trans_list[10]]])
+    
+    t = np.array([[trans_list[3]], [trans_list[7]], [trans_list[11]]])
+
+    return K, R, t
+
 def read_kitti_bin_file(bin_path):
     # 读取二进制文件
     point_cloud = np.fromfile(bin_path, dtype=np.float32).reshape(-1, 4)
