@@ -7,11 +7,11 @@ sys.path.append(".")
 from others.KITTI.utils.functions import get_point_cloud, read_odom, odom_to_T_r, read_pcd_list, read_image_list, read_calibration_file
 
 
-directory_pcd = "/home/cjs/data/KITTI/data_odometry_velodyne/dataset/sequences/00/velodyne"
-directory_image = "/home/cjs/data/KITTI/data_odometry_gray/dataset/sequences/00/image_0"
-path_odom = "/home/cjs/data/KITTI/data_odometry_poses/dataset/poses/00.txt"
+directory_pcd = "/data/KITTI/data_odometry_velodyne/dataset/sequences/00/velodyne"
+directory_image = "/data/KITTI/data_odometry_gray/dataset/sequences/00/image_0"
+path_odom = "/data/KITTI/data_odometry_poses/dataset/poses/00.txt"
 
-path_output = "/home/cjs/data/output"
+path_output = "/root/data/output/all"
 
 odom_lists = read_odom(path_odom)
 
@@ -21,11 +21,13 @@ image_lists = read_image_list(directory_image)
 
 N = min(len(pcd_lists), len(image_lists))
 
-for i in range(5, N - 5):
+print("----------------Combining begins----------------")
+for i in range(5, 6):
     combined_pcd = o3d.geometry.PointCloud()
     filename = os.path.basename(pcd_lists[i])
+    filename = filename.replace(".bin", ".pcd")
 
-    for j in range(i - 5, i + 6):
+    for j in range(i - 5, N - 5):
         
         pcd = get_point_cloud(pcd_lists[j])
 
@@ -37,6 +39,11 @@ for i in range(5, N - 5):
 
     path = os.path.join(path_output, filename)
     o3d.io.write_point_cloud(path, combined_pcd)
+
+    if i % 100 == 0:
+        run = i / N * 100   
+        print("Runing: {:.2f}% done.".format(run))
+    
 
 
 
