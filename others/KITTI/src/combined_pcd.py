@@ -5,7 +5,7 @@ import sys
 sys.path.append(".")
 
 from others.KITTI.utils.functions import get_point_cloud, read_odom, odom_to_T_r, read_pcd_list, read_image_list, read_calibration_file
-
+from others.KITTI.utils.util import print_progress
 
 directory_pcd = "/data/KITTI/data_odometry_velodyne/dataset/sequences/00/velodyne"
 directory_image = "/data/KITTI/data_odometry_gray/dataset/sequences/00/image_0"
@@ -40,9 +40,7 @@ for i in range(5, 6):
     path = os.path.join(path_output, filename)
     o3d.io.write_point_cloud(path, combined_pcd)
 
-    if i % 100 == 0:
-        run = i / N * 100   
-        print("Runing: {:.2f}% done.".format(run))
+    print_progress(i, N)
     
 
 
